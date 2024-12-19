@@ -91,15 +91,3 @@ payload.EBox.epsilon    = 0.05;
 
 %% HEAT POWER OPTIC
 
-payload.Optic.hot.Q_sun      = Earth.q_sun*payload.Optic.hot.A_sun*payload.Optic.alpha;
-payload.Optic.hot.Q_IR       = Earth.q_IR*payload.Optic.hot.A_sun*payload.Optic.epsilon;
-payload.Optic.hot.Q_albedo   = Earth.q_albedo*payload.Optic.hot.A_sun*payload.Optic.alpha;
-payload.Optic.hot.Q_int      = 12;
-
-%% HEAT POWER OPTIC
-
-payload.EBox.hot.Q_sun      = Earth.q_sun*payload.EBox.hot.A_sun*payload.EBox.alpha;
-payload.EBox.hot.Q_IR       = Earth.q_IR*payload.EBox.hot.A_sun*payload.EBox.epsilon;
-payload.EBox.hot.Q_albedo   = Earth.q_albedo*payload.EBox.hot.A_sun*payload.EBox.alpha;
-payload.EBox.hot.Q_int      = 15;
-
