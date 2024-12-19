@@ -92,14 +92,49 @@ payload.EBox.epsilon    = 0.05;
 %% HEAT POWER OPTIC
 
 payload.Optic.hot.Q_sun      = Earth.q_sun*payload.Optic.hot.A_sun*payload.Optic.alpha;
-payload.Optic.hot.Q_IR       = Earth.q_IR*payload.Optic.hot.A_sun*payload.Optic.epsilon;
-payload.Optic.hot.Q_albedo   = Earth.q_albedo*payload.Optic.hot.A_sun*payload.Optic.alpha;
+payload.Optic.hot.Q_IR       = Earth.q_IR*payload.Optic.hot.A_IR*payload.Optic.epsilon;
+payload.Optic.hot.Q_albedo   = Earth.q_albedo*payload.Optic.hot.A_albedo*payload.Optic.alpha;
 payload.Optic.hot.Q_int      = 12;
+
+payload.Optic.cold.Q_sun      = Earth.q_sun*payload.Optic.cold.A_sun*payload.Optic.alpha;
+payload.Optic.cold.Q_IR       = Earth.q_IR*payload.Optic.cold.A_IR*payload.Optic.epsilon;
+payload.Optic.cold.Q_albedo   = Earth.q_albedo*payload.Optic.cold.A_albedo*payload.Optic.alpha;
+payload.Optic.cold.Q_int      = 0;
 
 %% HEAT POWER OPTIC
 
 payload.EBox.hot.Q_sun      = Earth.q_sun*payload.EBox.hot.A_sun*payload.EBox.alpha;
-payload.EBox.hot.Q_IR       = Earth.q_IR*payload.EBox.hot.A_sun*payload.EBox.epsilon;
-payload.EBox.hot.Q_albedo   = Earth.q_albedo*payload.EBox.hot.A_sun*payload.EBox.alpha;
+payload.EBox.hot.Q_IR       = Earth.q_IR*payload.EBox.hot.A_IR*payload.EBox.epsilon;
+payload.EBox.hot.Q_albedo   = Earth.q_albedo*payload.EBox.hot.A_albedo*payload.EBox.alpha;
 payload.EBox.hot.Q_int      = 15;
 
+payload.EBox.cold.Q_sun      = Earth.q_sun*payload.EBox.cold.A_sun*payload.EBox.alpha;
+payload.EBox.cold.Q_IR       = Earth.q_IR*payload.EBox.cold.A_IR*payload.EBox.epsilon;
+payload.EBox.cold.Q_albedo   = Earth.q_albedo*payload.EBox.cold.A_albedo*payload.EBox.alpha;
+payload.EBox.cold.Q_int      = 0;
+
+%% SIMULATION, NO THERMAL CONTROL
+
+set_param('TCS_static/Q ext E-Box', 'Value', 'payload.EBox.hot.Q_sun+payload.EBox.hot.Q_IR+payload.EBox.hot.Q_albedo')
+set_param('TCS_static/Q int E-Box', 'Value', 'payload.EBox.hot.Q_int')
+set_param('TCS_static/Q ext optic', 'Value', 'payload.Optic.hot.Q_sun+payload.Optic.hot.Q_IR+payload.Optic.hot.Q_albedo')
+set_param('TCS_static/Q int optic', 'Value', 'payload.Optic.hot.Q_int')
+set_param('TCS_static/SC', 'temperature', 'constant.T_SC.hot')
+
+res = sim("TCS_static.slx");
+payload.EBox.hot.Temp   = res.T_EBox(end);
+payload.Optic.hot.Temp  = res.T_optic(end);
+
+clear res
+
+set_param('TCS_static/Q ext E-Box', 'Value', 'payload.EBox.cold.Q_sun+payload.EBox.cold.Q_IR+payload.EBox.cold.Q_albedo')
+set_param('TCS_static/Q int E-Box', 'Value', 'payload.EBox.cold.Q_int')
+set_param('TCS_static/Q ext optic', 'Value', 'payload.Optic.cold.Q_sun+payload.Optic.cold.Q_IR+payload.Optic.cold.Q_albedo')
+set_param('TCS_static/Q int optic', 'Value', 'payload.Optic.cold.Q_int')
+set_param('TCS_static/SC', 'temperature', 'constant.T_SC.cold')
+
+res = sim("TCS_static.slx");
+payload.EBox.cold.Temp   = res.T_EBox(end);
+payload.Optic.cold.Temp  = res.T_optic(end);
+
+clear res
