@@ -46,9 +46,9 @@ Kalliope.h   = Kalliope.a-Kalliope.R;
 A_SC_EBox   = 4*3*2.5e-5;           % [m^2]
 k_SC_EBox   = 7.8;                  % [W/mK]                 
 t_SC_EBox   = 0.005;
-A_SC_Optic  = 8*4*(pi*0.005^2);
-k_SC_Optic  = 120;                  % [W/(mK)]
-t_SC_Optic  = 0.078;
+A_SC_Optic  = 8*0.0001;
+k_SC_Optic  = 7.8;                  % [W/(mK)]
+t_SC_Optic  = 0.04;
 
 payload.theta           = 0;                                                % View factor of the s/c [rad]
 payload.EBox.R_sc       = t_SC_EBox / (A_SC_EBox*k_SC_EBox);                % [K/W] Resistenza termoica tra Spececraft e nodo E-Box
@@ -208,27 +208,14 @@ clear res
 T_limit_EBox_up = 273.15+40;
 A_rad_EBox = (payload.EBox.hot.Q_int-(T_limit_EBox_up-constant.T_SC.hot)/payload.EBox.R_sc)/(constant.sigma*0.9*(T_limit_EBox_up^4-constant.T_space^4))
 
-if A_rad_EBox<0
-    A_rad_EBox=0;
-end
-
 T_limit_Optic_up = 273.15+40;
 A_rad_Optic = (payload.Optic.hot.Q_int-(T_limit_Optic_up-constant.T_SC.hot)/payload.Optic.R_sc)/(constant.sigma*0.9*(T_limit_Optic_up^4-constant.T_space^4))
 
-if A_rad_Optic<0
-    A_rad_Optic=0;
-end
-
 %% HEATERS SIZING
-T_limit_EBox_down   = 273.15-45;
+T_limit_EBox_down   = 273.15+40;
 T_limit_Optic_down  = 273.15-20;
-syms Heat_EBox Heat_Optic T_ext_EBox T_ext_Optic
+syms Heat_EBox Heat_Optic
 
-eqns = [payload.EBox.cold.Q_sun+payload.EBox.cold.Q_IR+payload.EBox.cold.Q_albedo+payload.EBox.cold.Q_int-constant.sigma*(T_limit_EBox_down^4-constant.T_space^4)*(0.9*A_rad_EBox+payload.EBox.epsilon*payload.EBox.cold.A_DS)+(constant.T_SC.cold-T_limit_EBox_down)/payload.EBox.R_sc+Heat_EBox==0;
-        payload.Optic.cold.Q_sun+payload.Optic.cold.Q_IR+payload.Optic.cold.Q_albedo+payload.Optic.cold.Q_int-constant.sigma*(T_limit_Optic_down^4-constant.T_space^4)*(0.9*A_rad_Optic+payload.Optic.epsilon*payload.Optic.cold.A_DS)+(constant.T_SC.cold-T_limit_Optic_down)/payload.Optic.R_sc+Heat_Optic==0];
-
+eqns = [payload.EBox.cold.Q_sun+payload.EBox.cold.Q_IR+payload.EBox.cold.Q_albedo+payload.EBox.cold.Q_int-consta;
+        ];
 sol = solve(eqns, [Heat_EBox Heat_Optic]);
-payload.EBox.Heaters = double(sol.Heat_EBox);
-payload.Optic.Heaters = double(sol.Heat_Optic);
-payload.EBox.Heaters
-payload.Optic.Heaters
