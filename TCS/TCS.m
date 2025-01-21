@@ -56,6 +56,9 @@ payload.EBox.R_sc       = t_SC_EBox / (A_SC_EBox*k_SC_EBox);                % [K
 payload.Optic.R_sc      = t_SC_Optic / (A_SC_Optic*k_SC_Optic);              % [K/W] Resistenza termica tra Spececraft e nodo ottica
 
 payload.MLI.eps_int     = 0.03;
+payload.epsilon_rad     = 0.9;
+
+clear A_SC_EBox k_SC_EBox t_SC_EBox A_SC_Optic k_SC_Optic t_SC_Optic
 
 %% Specific heat Fluxes @ Earth
 
@@ -106,37 +109,37 @@ payload.EBox.epsilon    = 0.8;
 
 %% HEAT POWER OPTIC
 
-% payload.Optic.hot.Q_sun      = Earth.q_sun*payload.Optic.hot.A_sun*payload.Optic.alpha;
-% payload.Optic.hot.Q_IR       = Earth.q_IR*payload.Optic.hot.A_IR*payload.Optic.epsilon;
-% payload.Optic.hot.Q_albedo   = Earth.q_albedo*payload.Optic.hot.A_albedo*payload.Optic.alpha;
-% payload.Optic.hot.Q_int      = 12;
+% payload.Optic.hot.Q_sun         = Earth.q_sun*payload.Optic.hot.A_sun*payload.Optic.alpha;
+% payload.Optic.hot.Q_IR          = Earth.q_IR*payload.Optic.hot.A_IR*payload.Optic.epsilon;
+% payload.Optic.hot.Q_albedo      = Earth.q_albedo*payload.Optic.hot.A_albedo*payload.Optic.alpha;
+% payload.Optic.hot.Q_int         = 12;
 
-payload.Optic.hot.Q_sun      = Kalliope.q_sun*payload.Optic.hot.A_sun*payload.Optic.alpha;
-payload.Optic.hot.Q_IR       = Kalliope.q_IR*0.0707*0.8;
-payload.Optic.hot.Q_albedo   = Kalliope.q_albedo*0.0707*0.2;
-payload.Optic.hot.Q_int      = 12;
+payload.Optic.hot.Q_sun         = Kalliope.q_sun*payload.Optic.hot.A_sun*payload.Optic.alpha;
+payload.Optic.hot.Q_IR          = Kalliope.q_IR*0.0707*0.8;
+payload.Optic.hot.Q_albedo      = Kalliope.q_albedo*0.0707*0.2;
+payload.Optic.hot.Q_int         = 12;
 
-payload.Optic.cold.Q_sun      = Kalliope.q_sun*payload.Optic.cold.A_sun*payload.Optic.alpha;
-payload.Optic.cold.Q_IR       = Kalliope.q_IR*payload.Optic.cold.A_IR*payload.Optic.epsilon;
-payload.Optic.cold.Q_albedo   = Kalliope.q_albedo*payload.Optic.cold.A_albedo*payload.Optic.alpha;
-payload.Optic.cold.Q_int      = 0;
+payload.Optic.cold.Q_sun        = Kalliope.q_sun*payload.Optic.cold.A_sun*payload.Optic.alpha;
+payload.Optic.cold.Q_IR         = Kalliope.q_IR*payload.Optic.cold.A_IR*payload.Optic.epsilon;
+payload.Optic.cold.Q_albedo     = Kalliope.q_albedo*payload.Optic.cold.A_albedo*payload.Optic.alpha;
+payload.Optic.cold.Q_int        = 0;
 
 %% HEAT POWER EBOX
 
-% payload.EBox.hot.Q_sun      = Earth.q_sun*payload.EBox.hot.A_sun*payload.EBox.alpha;
-% payload.EBox.hot.Q_IR       = Earth.q_IR*payload.EBox.hot.A_IR*payload.EBox.epsilon;
-% payload.EBox.hot.Q_albedo   = Earth.q_albedo*payload.EBox.hot.A_albedo*payload.EBox.alpha;
-% payload.EBox.hot.Q_int      = 15;
+% payload.EBox.hot.Q_sun          = Earth.q_sun*payload.EBox.hot.A_sun*payload.EBox.alpha;
+% payload.EBox.hot.Q_IR           = Earth.q_IR*payload.EBox.hot.A_IR*payload.EBox.epsilon;
+% payload.EBox.hot.Q_albedo       = Earth.q_albedo*payload.EBox.hot.A_albedo*payload.EBox.alpha;
+% payload.EBox.hot.Q_int          = 15;
 
-payload.EBox.hot.Q_sun      = Kalliope.q_sun*payload.EBox.hot.A_sun*sqrt(2)*payload.EBox.alpha;
-payload.EBox.hot.Q_IR       = 0;
-payload.EBox.hot.Q_albedo   = 0;
-payload.EBox.hot.Q_int      = 33;
+payload.EBox.hot.Q_sun          = Kalliope.q_sun*payload.EBox.hot.A_sun*sqrt(2)*payload.EBox.alpha;
+payload.EBox.hot.Q_IR           = 0;
+payload.EBox.hot.Q_albedo       = 0;
+payload.EBox.hot.Q_int          = 33;
 
-payload.EBox.cold.Q_sun      = Kalliope.q_sun*payload.EBox.cold.A_sun*payload.EBox.alpha;
-payload.EBox.cold.Q_IR       = Kalliope.q_IR*payload.EBox.cold.A_IR*payload.EBox.epsilon;
-payload.EBox.cold.Q_albedo   = Kalliope.q_albedo*payload.EBox.cold.A_albedo*payload.EBox.alpha;
-payload.EBox.cold.Q_int      = 1;
+payload.EBox.cold.Q_sun         = Kalliope.q_sun*payload.EBox.cold.A_sun*payload.EBox.alpha;
+payload.EBox.cold.Q_IR          = Kalliope.q_IR*payload.EBox.cold.A_IR*payload.EBox.epsilon;
+payload.EBox.cold.Q_albedo      = Kalliope.q_albedo*payload.EBox.cold.A_albedo*payload.EBox.alpha;
+payload.EBox.cold.Q_int         = 1;
 
 %% SIMULATION, NO THERMAL CONTROL
 
@@ -207,32 +210,46 @@ payload.EBox.cold.Q_int      = 1;
 % clear res
 
 %% RADIATORS SIZING
-T_limit_EBox_up = 273.15+40;
-A_rad_EBox = (payload.EBox.hot.Q_int-(T_limit_EBox_up-constant.T_SC.hot)/payload.EBox.R_sc)/(constant.sigma*0.9*(T_limit_EBox_up^4-constant.T_space^4))
 
-if A_rad_EBox<0
-    A_rad_EBox=0;
+payload.EBox.Tmax           = 273.15+40;
+payload.EBox.hot.Q_SC       = (payload.EBox.Tmax-constant.T_SC.hot)/payload.EBox.R_sc;
+payload.EBox.hot.Q_rad      = constant.sigma*payload.epsilon_rad*(payload.EBox.Tmax^4-constant.T_space^4);
+payload.EBox.A_rad          = (payload.EBox.hot.Q_int-payload.EBox.hot.Q_SC)/payload.EBox.hot.Q_rad;
+
+if payload.EBox.A_rad<0
+    payload.EBox.A_rad=0;
 end
 
-T_limit_Optic_up = 273.15+40;
-A_rad_Optic = (payload.Optic.hot.Q_int-(T_limit_Optic_up-constant.T_SC.hot)/payload.Optic.R_sc)/(constant.sigma*0.9*(T_limit_Optic_up^4-constant.T_space^4))
+payload.Optic.Tmax          = 273.15+40;
+payload.Optic.hot.Q_SC      = (payload.Optic.Tmax-constant.T_SC.hot)/payload.Optic.R_sc;
+payload.Optic.hot.Q_rad     = constant.sigma*payload.epsilon_rad*(payload.Optic.Tmax^4-constant.T_space^4);
+payload.Optic.A_rad         = (payload.Optic.hot.Q_int-payload.Optic.hot.Q_SC)/payload.Optic.hot.Q_rad;
 
-if A_rad_Optic<0
-    A_rad_Optic=0;
+if payload.Optic.A_rad<0
+    payload.Optic.A_rad=0;
 end
 
 %% HEATERS SIZING
-T_limit_EBox_down   = 273.15-30; % survivability Ebox during cold case (from PCDU)
-T_limit_Optic_down  = 273.15-20; %  
-syms Heat_EBox Heat_Optic T_ext_EBox T_ext_Optic
 
-eqns = [payload.EBox.cold.Q_sun+payload.EBox.cold.Q_IR+payload.EBox.cold.Q_albedo+payload.EBox.cold.Q_int-constant.sigma*(T_limit_EBox_down^4- ...
-    constant.T_space^4)*(0.9*A_rad_EBox+payload.EBox.epsilon*payload.EBox.cold.A_DS)+(constant.T_SC.cold-T_limit_EBox_down)/payload.EBox.R_sc+Heat_EBox==0;
-        payload.Optic.cold.Q_sun+payload.Optic.cold.Q_IR+payload.Optic.cold.Q_albedo+payload.Optic.cold.Q_int-constant.sigma*(T_limit_Optic_down^4- ...
-        constant.T_space^4)*(0.9*A_rad_Optic+payload.Optic.epsilon*payload.Optic.cold.A_DS)+(constant.T_SC.cold-T_limit_Optic_down)/payload.Optic.R_sc+Heat_Optic==0];
+payload.EBox.Tmin       = 273.15-20; % survivability Ebox during cold case (from PCDU)
+payload.Optic.Tmin      = 273.15-20; %  
+syms Heat_EBox Heat_Optic
+
+% eqns = [payload.EBox.cold.Q_sun+payload.EBox.cold.Q_IR+payload.EBox.cold.Q_albedo+payload.EBox.cold.Q_int-constant.sigma*(T_limit_EBox_down^4- ...
+%         constant.T_space^4)*(0.9*A_rad_EBox+payload.EBox.epsilon*payload.EBox.cold.A_DS)+(constant.T_SC.cold-T_limit_EBox_down)/payload.EBox.R_sc+Heat_EBox==0;
+%         payload.Optic.cold.Q_sun+payload.Optic.cold.Q_IR+payload.Optic.cold.Q_albedo+payload.Optic.cold.Q_int-constant.sigma*(T_limit_Optic_down^4- ...
+%         constant.T_space^4)*(0.9*A_rad_Optic+payload.Optic.epsilon*payload.Optic.cold.A_DS)+(constant.T_SC.cold-T_limit_Optic_down)/payload.Optic.R_sc+Heat_Optic==0];
+
+eqns = [payload.EBox.cold.Q_int-constant.sigma*(payload.EBox.Tmin^4-constant.T_space^4)...
+        *(payload.epsilon_rad*payload.EBox.A_rad+payload.EBox.epsilon*payload.EBox.cold.A_DS)...
+        +(constant.T_SC.cold-payload.EBox.Tmin)/payload.EBox.R_sc+Heat_EBox==0;
+
+        payload.Optic.cold.Q_int-constant.sigma*(payload.Optic.Tmin^4-constant.T_space^4)*...
+        (payload.epsilon_rad*payload.Optic.A_rad+payload.Optic.epsilon*payload.Optic.cold.A_DS)...
+        +(constant.T_SC.cold-payload.Optic.Tmin)/payload.Optic.R_sc+Heat_Optic==0];
 
 sol = solve(eqns, [Heat_EBox Heat_Optic]);
 payload.EBox.Heaters = double(sol.Heat_EBox);
 payload.Optic.Heaters = double(sol.Heat_Optic);
-heaters_EBOX = payload.EBox.Heaters
-heaters_Optics = payload.Optic.Heaters
+
+clear Heat_EBox Heat_Optic sol eqns
