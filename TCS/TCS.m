@@ -161,46 +161,6 @@ payload.EBox.cold.Q_int         = 1;
 % 
 % clear res
 
-% %% SIMULATION, MLI
-% 
-% set_param('TCS_MLI/Q ext E-Box', 'Value', 'payload.EBox.hot.Q_sun+payload.EBox.hot.Q_IR+payload.EBox.hot.Q_albedo')
-% set_param('TCS_MLI/MLI int', 'Area', 'payload.EBox.hot.A_tot')
-% set_param('TCS_MLI/MLI int1', 'Area', 'payload.Optic.hot.A_tot')
-% 
-% set_param('TCS_MLI/Q int E-Box', 'Value', 'payload.EBox.hot.Q_int')
-% set_param('TCS_MLI/Q ext optic', 'Value', 'payload.Optic.hot.Q_sun+payload.Optic.hot.Q_IR+payload.Optic.hot.Q_albedo')
-% set_param('TCS_MLI/Q int optic', 'Value', 'payload.Optic.hot.Q_int')
-% set_param('TCS_MLI/MLI rad', 'Area', 'payload.EBox.hot.A_DS')
-% set_param('TCS_MLI/MLI rad1', 'Area', 'payload.Optic.hot.A_DS')
-% set_param('TCS_MLI/SC', 'temperature', 'constant.T_SC.hot')
-% set_param('TCS_MLI/SC1', 'temperature', 'constant.T_SC.hot')
-% 
-% res = sim("TCS_MLI.slx");
-% payload.EBox.hot.Temp_MLI   = res.T_EBox(end);
-% payload.Optic.hot.Temp_MLI  = res.T_optic(end);
-% 
-% payload.EBox.hot.Temp_MLI
-% payload.Optic.hot.Temp_MLI
-% 
-% clear res
-% 
-% set_param('TCS_MLI/Q ext E-Box', 'Value', 'payload.EBox.cold.Q_sun+payload.EBox.cold.Q_IR+payload.EBox.cold.Q_albedo')
-% set_param('TCS_MLI/MLI int', 'Area', 'payload.EBox.cold.A_tot')
-% set_param('TCS_MLI/MLI int1', 'Area', 'payload.Optic.cold.A_tot')
-% set_param('TCS_MLI/Q int E-Box', 'Value', 'payload.EBox.cold.Q_int')
-% set_param('TCS_MLI/Q ext optic', 'Value', 'payload.Optic.cold.Q_sun+payload.Optic.cold.Q_IR+payload.Optic.cold.Q_albedo')
-% set_param('TCS_MLI/Q int optic', 'Value', 'payload.Optic.cold.Q_int')
-% set_param('TCS_MLI/MLI rad', 'Area', 'payload.EBox.cold.A_DS')
-% set_param('TCS_MLI/MLI rad1', 'Area', 'payload.Optic.cold.A_DS')
-% set_param('TCS_MLI/SC', 'temperature', 'constant.T_SC.cold')
-% set_param('TCS_MLI/SC1', 'temperature', 'constant.T_SC.cold')
-% 
-% res = sim("TCS_MLI.slx");
-% payload.EBox.cold.Temp_MLI   = res.T_EBox(end);
-% payload.Optic.cold.Temp_MLI  = res.T_optic(end);
-% 
-% clear res
-
 %% RADIATORS SIZING
 
 payload.EBox.Tmax           = 273.15+40;
@@ -226,11 +186,6 @@ end
 payload.EBox.Tmin       = 273.15-20; % survivability Ebox during cold case (from PCDU)
 payload.Optic.Tmin      = 273.15-20; %  
 syms Heat_EBox Heat_Optic
-
-% eqns = [payload.EBox.cold.Q_sun+payload.EBox.cold.Q_IR+payload.EBox.cold.Q_albedo+payload.EBox.cold.Q_int-constant.sigma*(T_limit_EBox_down^4- ...
-%         constant.T_space^4)*(0.9*A_rad_EBox+payload.EBox.epsilon*payload.EBox.cold.A_DS)+(constant.T_SC.cold-T_limit_EBox_down)/payload.EBox.R_sc+Heat_EBox==0;
-%         payload.Optic.cold.Q_sun+payload.Optic.cold.Q_IR+payload.Optic.cold.Q_albedo+payload.Optic.cold.Q_int-constant.sigma*(T_limit_Optic_down^4- ...
-%         constant.T_space^4)*(0.9*A_rad_Optic+payload.Optic.epsilon*payload.Optic.cold.A_DS)+(constant.T_SC.cold-T_limit_Optic_down)/payload.Optic.R_sc+Heat_Optic==0];
 
 eqns = [payload.EBox.cold.Q_int-constant.sigma*(payload.EBox.Tmin^4-constant.T_space^4)*(payload.epsilon_rad*payload.EBox.A_rad)+(constant.T_SC.cold-payload.EBox.Tmin)/payload.EBox.R_sc+Heat_EBox==0;
         payload.Optic.cold.Q_int-constant.sigma*(payload.Optic.Tmin^4-constant.T_space^4)*(payload.epsilon_rad*payload.Optic.A_rad+payload.Optic.eps_mirror*payload.Optic.A_mirror)+(constant.T_SC.cold-payload.Optic.Tmin)/payload.Optic.R_sc+Heat_Optic==0];
